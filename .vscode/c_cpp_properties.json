@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "dev",
+            "includePath": [
+                "${workspaceRoot}/include"
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceRoot}/include"
+                ]
+            }
+        }
+    ]
+}
