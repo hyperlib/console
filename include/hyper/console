@@ -11,3 +11,4 @@
 #pragma once
 
 #include <hyper/_console/color.hpp>
+#include <hyper/_console/command.hpp>
