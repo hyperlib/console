@@ -11,4 +11,10 @@
 #pragma once
 
 #include <hyper/_console/color.hpp>
+#include <hyper/_console/option_value.hpp>
+#include <hyper/_console/option.hpp>
 #include <hyper/_console/command.hpp>
+#include <hyper/_console/application.hpp>
+#include <hyper/_console/value.hpp>
+#include <hyper/_console/implicit.hpp>
+#include <hyper/_console/switch.hpp>

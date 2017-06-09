@@ -12,7 +12,9 @@
 
 #include <string>
 
-namespace hyper::console::color {
+namespace hyper {
+namespace console {
+namespace color {
     static const std::string ResetAll = "\033[0m";
 
     static const std::string Bold       = "\033[1m";
@@ -64,4 +66,7 @@ namespace hyper::console::color {
     static const std::string BackgroundLightMagenta = "\033[105m";
     static const std::string BackgroundLightCyan    = "\033[106m";
     static const std::string BackgroundWhite        = "\033[107m";
-}
+
+} // end of color namespace
+} // end of console namespace
+} // end of hyper namespace
