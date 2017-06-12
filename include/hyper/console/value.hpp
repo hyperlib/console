@@ -12,6 +12,7 @@
 
 #include <hyper/console/option.hpp>
 #include <hyper/console/option_value.hpp>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -187,12 +188,17 @@ namespace console {
             throw std::invalid_argument("missing argument for " + whatOption);
         }
 
+        std::cout << "----- Value<std::string>::Parse -------" << std::endl;
+
+        std::cout << "----- Value::AddValue -------" << std::endl;
         addValue(value);
     }
 
 
     template<class T>
     void Value<T>::parse(const std::string& whatOption, const char* value) {
+        std::cout << "----- Value<T>::Parse -------" << std::endl;
+
         T parsedValue;
         std::string strValue;
 
@@ -225,6 +231,7 @@ namespace console {
             throw std::invalid_argument("missing argument for " + whatOption);
         }
 
+        std::cout << "----- Value::AddValue -------" << std::endl;
         addValue(parsedValue);
     }
 

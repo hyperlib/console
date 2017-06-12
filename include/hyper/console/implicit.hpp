@@ -13,6 +13,7 @@
 #include <hyper/console/option.hpp>
 #include <hyper/console/option_value.hpp>
 #include <hyper/console/value.hpp>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -26,13 +27,13 @@ namespace console {
         Implicit(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& implicitVal):
             Value<T>(shortOption, longOption, description, implicitVal)
         {
-            setType(OptionValue::Optional);
+            Value<T>::setType(OptionValue::Optional);
         }
 
         Implicit(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& implicitVal, T* assignTo):
             Value<T>(shortOption, longOption, description, implicitVal, assignTo)
         {
-            setType(OptionValue::Optional);
+            Value<T>::setType(OptionValue::Optional);
         }
 
         Value<T>& assignTo(T* var);
@@ -72,7 +73,9 @@ namespace console {
     template<class T>
     void Implicit<T>::parse(const std::string& whatOption, const char* value) {
         if ((value != NULL) && (strlen(value) > 0)) {
+            std::cout << "----- Start Implicit::Parse -------" << std::endl;
             Value<T>::parse(whatOption, value);
+            std::cout << "----- End Implicit::Parse -------" << std::endl;
         } else {
             this->addValue(this->m_default);
         }

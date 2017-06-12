@@ -51,7 +51,7 @@ namespace console {
         return m_description;
     }
 
-    Command& Command::option(Option& option) {
+    /*Command& Command::option(Option& option) {
         for (std::size_t n = 0; n < m_options.size(); ++n) {
             if ((option.getShortOption() != 0) && (option.getShortOption() == m_options[n]->getShortOption())) {
                 throw std::invalid_argument("dublicate short option '-" + std::string(1, option.getShortOption()) + "'");
@@ -65,7 +65,7 @@ namespace console {
         m_options.push_back(&option);
 
         return *this;
-    }
+    }*/
 
     Command& Command::command(Command& cmd) {
         cmd.parent(*this);
@@ -211,8 +211,11 @@ namespace console {
 
                     std::cout << "--- option != NULL" << std::endl;
                     if (option != NULL) {
+                        std::cout << "--- start option->parse()" << std::endl;
                         option->parse(std::string(1, c), optarg.c_str());
+                        std::cout << "--- end option->parse()" << std::endl;
                     } else {
+                        std::cout << "--- option unknown" << std::endl;
                         unknown = true;
                     }
                 }
