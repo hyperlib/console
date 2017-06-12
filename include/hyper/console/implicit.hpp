@@ -1,4 +1,4 @@
-// <hyper/_console/implicit.hpp> -*- C++ -*-
+// <hyper/console/implicit.hpp> -*- C++ -*-
 
 /**
  * Hyper
@@ -10,9 +10,9 @@
  */
 #pragma once
 
-#include <hyper/_console/option.hpp>
-#include <hyper/_console/option_value.hpp>
-#include <hyper/_console/value.hpp>
+#include <hyper/console/option.hpp>
+#include <hyper/console/option_value.hpp>
+#include <hyper/console/value.hpp>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -23,8 +23,17 @@ namespace console {
     template<class T>
     class Implicit : public Value<T> {
     public:
-        Implicit(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& implicitVal);
-        Implicit(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& implicitVal, T* assignTo);
+        Implicit(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& implicitVal):
+            Value<T>(shortOption, longOption, description, implicitVal)
+        {
+            setType(OptionValue::Optional);
+        }
+
+        Implicit(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& implicitVal, T* assignTo):
+            Value<T>(shortOption, longOption, description, implicitVal, assignTo)
+        {
+            setType(OptionValue::Optional);
+        }
 
         Value<T>& assignTo(T* var);
 
@@ -33,15 +42,16 @@ namespace console {
 
         virtual std::string optionToString() const;
 
-        virtual OptionValue getType() const;
+        //virtual OptionValue getType() const;
 
         Value<T>& setDefault(const T& value);
     };
-
+/*
     template<class T>
     Implicit<T>::Implicit(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& implicitVal) :
         Value<T>(shortOption, longOption, description, implicitVal)
     {
+        setType(OptionValue::Optional);
     }
 
 
@@ -49,13 +59,14 @@ namespace console {
     Implicit<T>::Implicit(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& implicitVal, T* assignTo) :
         Value<T>(shortOption, longOption, description, implicitVal, assignTo)
     {
+        setType(OptionValue::Optional);
     }
+*/
 
-
-    template<class T>
+    /*template<class T>
     OptionValue Implicit<T>::getType() const {
         return OptionValue::Optional;
-    }
+    }*/
 
 
     template<class T>

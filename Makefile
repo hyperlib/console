@@ -6,5 +6,5 @@ build:
 clean:
 	@rm -rf build
 
-test:
+test: build
 	@cd build; make test

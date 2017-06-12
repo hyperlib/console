@@ -1,4 +1,4 @@
-// <hyper/_console/value.hpp> -*- C++ -*-
+// <hyper/console/value.hpp> -*- C++ -*-
 
 /**
  * Hyper
@@ -10,8 +10,8 @@
  */
 #pragma once
 
-#include <hyper/_console/option.hpp>
-#include <hyper/_console/option_value.hpp>
+#include <hyper/console/option.hpp>
+#include <hyper/console/option_value.hpp>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -22,9 +22,19 @@ namespace console {
     template<class T>
     class Value : public Option {
     public:
-        Value(const std::string& shortOption, const std::string& longOption, const std::string& description);
-        Value(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& defaultVal);
-        Value(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& defaultVal, T* assignTo);
+        Value(const std::string& shortOption, const std::string& longOption, const std::string& description):
+            Option(OptionValue::Required, shortOption, longOption, description),
+            m_assign_to(NULL),
+            m_has_default(false)
+        {
+        }
+
+        Value(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& defaultVal):
+            Option(OptionValue::Required, shortOption, longOption, description),
+            m_default(defaultVal),
+            m_has_default(true)
+        {
+        }
 
         Value<T>& assignTo(T* var);
 
@@ -35,9 +45,9 @@ namespace console {
     protected:
         virtual void parse(const std::string& whatOption, const char* value);
 
-        virtual std::string optionToString() const;
+        std::string optionToString() const;
 
-        virtual OptionValue getType() const;
+        //virtual OptionValue getType() const;
 
         virtual void addValue(const T& value);
 
@@ -49,9 +59,10 @@ namespace console {
         bool m_has_default;
     };
 
+    /*
     template<class T>
     Value<T>::Value(const std::string& shortOption, const std::string& longOption, const std::string& description) :
-        Option(shortOption, longOption, description),
+        Option(OptionValue::Required, shortOption, longOption, description),
         m_assign_to(NULL),
         m_has_default(false)
     {
@@ -59,7 +70,7 @@ namespace console {
 
     template<class T>
     Value<T>::Value(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& defaultVal) :
-        Option(shortOption, longOption, description),
+        Option(OptionValue::Required, shortOption, longOption, description),
         m_default(defaultVal),
         m_has_default(true)
     {
@@ -68,13 +79,13 @@ namespace console {
 
     template<class T>
     Value<T>::Value(const std::string& shortOption, const std::string& longOption, const std::string& description, const T& defaultVal, T* assignTo) :
-        Option(shortOption, longOption, description),
+        Option(OptionValue::Required, shortOption, longOption, description),
         m_assign_to(assignTo),
         m_default(defaultVal),
         m_has_default(true)
     {
         updateReference();
-    }
+    }*/
 
     template<class T>
     std::string Value<T>::optionToString() const {
@@ -165,10 +176,10 @@ namespace console {
     }
 
 
-    template<class T>
+    /*template<class T>
     OptionValue Value<T>::getType() const {
         return OptionValue::Required;
-    }
+    }*/
 
     template<>
     void Value<std::string>::parse(const std::string& whatOption, const char* value) {

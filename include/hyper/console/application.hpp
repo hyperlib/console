@@ -1,4 +1,4 @@
-// <hyper/_console/application.hpp> -*- C++ -*-
+// <hyper/console/application.hpp> -*- C++ -*-
 
 /**
  * Hyper
@@ -10,10 +10,9 @@
  */
 #pragma once
 
-#include <hyper/_console/command.hpp>
-#include <hyper/_console/implicit.hpp>
-#include <hyper/_console/switch.hpp>
-#include <memory>
+#include <hyper/console/command.hpp>
+#include <hyper/console/implicit.hpp>
+#include <hyper/console/switch.hpp>
 
 namespace hyper {
 namespace console {
@@ -21,13 +20,16 @@ namespace console {
     class Application: public Command {
     public:
         Application(): Command() {
-            option(std::make_shared<Switch>("h", "help", "Print usage"));
-            option(std::shared_ptr<Implicit<std::string>>(new Implicit<std::string>(
+            Switch helpOption("h", "help", "Print usage");
+            Implicit<std::string> logLevelOption(
                 "l",
                 "log-level",
                 "Set the logging level (\"debug\", \"info\", \"warn\", \"error\", \"fatal\")",
                 "info"
-            )));
+            );
+
+            option(helpOption);
+            option(logLevelOption);
         }
     };
 

@@ -1,4 +1,4 @@
-// <hyper/_console/color.hpp> -*- C++ -*-
+// <hyper/console/color.hpp> -*- C++ -*-
 
 /**
  * Hyper

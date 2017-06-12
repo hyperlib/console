@@ -5,12 +5,13 @@ file (
     "*.cpp"
 )
 
-add_library (HyperConsole ${SRC_FILES})
+add_library (HyperConsoleLib ${SRC_FILES})
 
-set_target_properties (HyperConsole PROPERTIES
+set_target_properties (HyperConsoleLib PROPERTIES
     XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym"
     OUTPUT_NAME hyperconsole
+    COMPILE_FLAGS "${HYPER_LINK_FLAGS} -I."
     LINK_FLAGS "${HYPER_LINK_FLAGS}"
 )
 
-target_include_directories (HyperConsole PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories (HyperConsoleLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -1,3 +1,5 @@
+find_package (Boost 1.54.0)
+include_directories (${Boost_INCLUDE_DIRS})
 
 set (CMAKE_MEMORYCHECK_COMMAND valgrind)
 set (CMAKE_MEMORYCHECK_COMMAND_OPTIONS "--error-exitcode=1 -v --track-origins=yes --leak-check=full --show-reachable=yes --trace-children=yes --child-silent-after-fork=yes -q")
@@ -37,4 +39,4 @@ function (add_memcheck_test name binary)
     endif ()
 endfunction (add_memcheck_test)
 
-add_memcheck_test(Hyperscale hyper-console-test)
+add_memcheck_test(HyperConsole hyper-console-test)

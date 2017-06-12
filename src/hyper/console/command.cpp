@@ -10,20 +10,23 @@
  */
 
 #include <functional>
-#include <hyper/console>
+#include <hyper/console/command.hpp>
+#include <hyper/console/option_value.hpp>
 #include <iomanip>
 #include <iostream>
-#include <memory>
 #include <sstream>
 
 namespace hyper {
 namespace console {
 
-    Command::Command() {
+    Command::Command(): m_options(), m_commands(), m_parent(nullptr) {
     }
 
-    Command& Command::parent(std::shared_ptr<Command> command) {
-        m_parent = std::move(command);
+    Command::~Command() {
+    }
+
+    Command& Command::parent(const Command& command) {
+        m_parent = &command;
 
         return *this;
     }
@@ -48,28 +51,26 @@ namespace console {
         return m_description;
     }
 
-    Command& Command::option(std::shared_ptr<Option> option) {
+    Command& Command::option(Option& option) {
         for (std::size_t n = 0; n < m_options.size(); ++n) {
-            if ((option->getShortOption() != 0) && (option->getShortOption() == m_options[n]->getShortOption())) {
-                throw std::invalid_argument("dublicate short option '-" + std::string(1, option->getShortOption()) + "'");
+            if ((option.getShortOption() != 0) && (option.getShortOption() == m_options[n]->getShortOption())) {
+                throw std::invalid_argument("dublicate short option '-" + std::string(1, option.getShortOption()) + "'");
             }
 
-            if (!option->getLongOption().empty() && (option->getLongOption() == (m_options[n]->getLongOption()))) {
-                throw std::invalid_argument("dublicate long option '--" + option->getLongOption() + "'");
+            if (!option.getLongOption().empty() && (option.getLongOption() == (m_options[n]->getLongOption()))) {
+                throw std::invalid_argument("dublicate long option '--" + option.getLongOption() + "'");
             }
         }
 
-        m_options.push_back(std::move(option));
+        m_options.push_back(&option);
 
         return *this;
     }
 
-    Command& Command::command(std::shared_ptr<Command> cmd) {
-        cmd->parent(std::shared_ptr<Command>(this));
+    Command& Command::command(Command& cmd) {
+        cmd.parent(*this);
 
-        m_commands[cmd->getName()] = std::move(cmd);
-
-        // m_commands.push_back(std::move(cmd));
+        m_commands[cmd.getName()] = &cmd;
 
         return *this;
     }
@@ -84,10 +85,10 @@ namespace console {
         return *this;
     }
 
-    std::shared_ptr<Option> Command::getLongOpt(const std::string& opt) const {
+    Option* Command::getLongOpt(const std::string& opt) const {
         for (std::size_t n = 0; n < m_options.size(); ++n) {
             if (m_options[n]->getLongOption() == opt) {
-                return std::move(m_options[n]);
+                return m_options[n];
             }
         }
 
@@ -95,10 +96,10 @@ namespace console {
     }
 
 
-    std::shared_ptr<Option> Command::getShortOpt(const char opt) const {
+    Option* Command::getShortOpt(const char opt) const {
         for (std::size_t n = 0; n < m_options.size(); ++n) {
             if (m_options[n]->getShortOption() == opt) {
-                return std::move(m_options[n]);
+                return m_options[n];
             }
         }
 
@@ -148,8 +149,8 @@ namespace console {
                     opt.resize(equalIdx);
                 }
 
-                std::shared_ptr<Option> option = NULL;
-                if ((option = getLongOpt(opt))) {
+                Option* option = NULL;
+                if ((option = getLongOpt(opt)) != NULL) {
                     if (option->getType() == OptionValue::None) {
                         if (!optarg.empty()) {
                             option = NULL;
@@ -162,7 +163,7 @@ namespace console {
                     }
                 }
 
-                if (option) {
+                if (option != NULL) {
                     option->parse(opt, optarg.c_str());
 
                     m_argv.erase(it);
@@ -172,17 +173,24 @@ namespace console {
                     std::cerr << "Unknown options: " << arg << std::endl;
                 }
             } else if (arg.find("-") == 0) {
+                std::cout << "--- parse short option: " << arg << std::endl;
+
                 /// short option arg
                 std::string opt = arg.substr(1);
                 bool unknown = false;
 
                 for (std::size_t m = 0; m < opt.size(); ++m) {
                     char c = opt[m];
-                    std::shared_ptr<Option> option = NULL;
+                    Option* option = NULL;
                     std::string optarg;
+                    std::cout << "--- before getShortOpt (" << c << ")" << std::endl;
+                    if ((option = getShortOpt(c)) != NULL) {
+                        std::cout << "--- after getShortOpt (" << c << ")" << std::endl;
 
-                    if ((option = getShortOpt(c))) {
+                        std::cout << "--- option->getType() (" << static_cast<int>(option->getType()) << ")" << std::endl;
+
                         if (option->getType() == OptionValue::Required) {
+                            std::cout << "--- getType == required" << std::endl;
                             /// use the rest of the current argument as optarg
                             optarg = opt.substr(m + 1);
                             /// or the next arg
@@ -193,13 +201,16 @@ namespace console {
 
                             m = opt.size();
                         } else if (option->getType() == OptionValue::Optional) {
+                            std::cout << "--- getType == optional" << std::endl;
                             /// use the rest of the current argument as optarg
                             optarg = opt.substr(m + 1);
                             m = opt.size();
                         }
+                        std::cout << "--- end getShortOpt (" << c << ")" << std::endl;
                     }
 
-                    if (option) {
+                    std::cout << "--- option != NULL" << std::endl;
+                    if (option != NULL) {
                         option->parse(std::string(1, c), optarg.c_str());
                     } else {
                         unknown = true;
@@ -223,7 +234,7 @@ namespace console {
         return *this;
     }
 
-    Command& Command::setOptions(const std::vector<std::shared_ptr<Option>>& options) {
+    Command& Command::setOptions(const std::vector<Option*>& options) {
         m_options = options;
 
         return *this;
@@ -272,7 +283,7 @@ namespace console {
             return EXIT_FAILURE;
         }
 
-        auto cmd = m_commands[command];
+        Command* cmd = m_commands[command];
 
         if (cmd->hasCommand()) {
             // forward argc/argv to subcommand without this command arg.
@@ -297,7 +308,7 @@ namespace console {
     std::string Command::getNameWithParent() const {
         std::stringstream s;
 
-        if (m_parent) {
+        if (m_parent != NULL) {
             s << m_parent->getNameWithParent() << " ";
         }
 

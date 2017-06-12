@@ -1,4 +1,4 @@
-// <hyper/_console/command.hpp> -*- C++ -*-
+// <hyper/console/command.hpp> -*- C++ -*-
 
 /**
  * Hyper
@@ -11,8 +11,8 @@
 #pragma once
 
 #include <functional>
-#include <hyper/_console/option.hpp>
-#include <hyper/_console/option_value.hpp>
+#include <hyper/console/option.hpp>
+#include <hyper/console/option_value.hpp>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -30,13 +30,13 @@ namespace console {
 
         std::string m_description;
 
-        std::vector<std::shared_ptr<Option>> m_options;
+        std::vector<Option*> m_options;
 
-        std::map<std::string, std::shared_ptr<Command>> m_commands;
+        std::map<std::string, Command*> m_commands;
 
         std::vector<std::string> m_args;
 
-        std::shared_ptr<Command> m_parent;
+        const Command* m_parent;
 
         std::function<int(const Command& cmd)> m_handle;
 
@@ -45,7 +45,9 @@ namespace console {
     public:
         Command();
 
-        Command& parent(std::shared_ptr<Command> command);
+        ~Command();
+
+        Command& parent(const Command& command);
 
         Command& name(const std::string& name);
 
@@ -55,23 +57,23 @@ namespace console {
 
         std::string getDescription() const;
 
-        Command& option(std::shared_ptr<Option> option);
+        Command& option(Option& option);
 
-        Command& command(std::shared_ptr<Command> command);
+        Command& command(Command& command);
 
         bool hasCommand() const;
 
         Command& handle(const std::function<int(const Command& cmd_)> handle_);
 
-        std::shared_ptr<Option> getLongOpt(const std::string& opt) const;
+        Option* getLongOpt(const std::string& opt) const;
 
-        std::shared_ptr<Option> getShortOpt(const char opt) const;
+        Option* getShortOpt(const char opt) const;
 
         Command& parse(int argc, char *argv[]);
 
         Command& parse(std::vector<std::string>& args);
 
-        Command& setOptions(const std::vector<std::shared_ptr<Option>>& options);
+        Command& setOptions(const std::vector<Option*>& options);
 
         int run();
 

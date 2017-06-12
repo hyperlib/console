@@ -1,4 +1,4 @@
-// <hyper/_console/option_value.hpp> -*- C++ -*-
+// <hyper/console/option_value.hpp> -*- C++ -*-
 
 /**
  * Hyper

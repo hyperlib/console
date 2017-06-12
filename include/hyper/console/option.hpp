@@ -1,4 +1,4 @@
-// <hyper/_console/option.hpp> -*- C++ -*-
+// <hyper/console/option.hpp> -*- C++ -*-
 
 /**
  * Hyper
@@ -10,8 +10,8 @@
  */
 #pragma once
 
-#include <hyper/_console/command.hpp>
-#include <hyper/_console/option_value.hpp>
+#include <hyper/console/command.hpp>
+#include <hyper/console/option_value.hpp>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -28,13 +28,50 @@ namespace console {
 
         std::string m_description;
 
+        OptionValue m_type;
+
         unsigned int m_count;
 
+        virtual void parse(const std::string& whatOption, const char* value) = 0;
+
+        virtual void updateReference() = 0;
+
+        std::string optionToString() const {
+            std::stringstream line;
+
+            if (getShortOption() != 0) {
+                line << "  -" << getShortOption();
+                if (!getLongOption().empty()) {
+                    line << ", ";
+                }
+            } else {
+                line << "  ";
+            }
+
+            if (!getLongOption().empty()) {
+                line << "--" << getLongOption();
+            }
+
+            return line.str();
+        }
+
+        std::vector<std::string> descriptionToString(std::size_t width = 40) const {
+            std::vector<std::string> lines;
+            std::stringstream description(getDescription());
+            std::string line;
+
+            while (std::getline(description, line, '\n')) {
+                lines.push_back(line);
+            }
+
+            return lines;
+        }
     public:
-        Option(const std::string& shortOption, const std::string& longOption, const std::string& description) :
+        Option(const OptionValue type, const std::string& shortOption, const std::string& longOption, const std::string& description) :
             m_short_option(shortOption),
             m_long_option(longOption),
             m_description(description),
+            m_type(type),
             m_count(0)
         {
             if (shortOption.size() > 1) {
@@ -45,9 +82,6 @@ namespace console {
                 throw std::invalid_argument("short and long option are empty");
             }
         }
-
-
-        virtual ~Option() {}
 
         inline char getShortOption() const {
             if (!m_short_option.empty()) {
@@ -73,44 +107,13 @@ namespace console {
             return (count() > 0);
         }
 
-    protected:
-        virtual void parse(const std::string& whatOption, const char* value) = 0;
-
-        virtual void updateReference() {
+        inline void setType(OptionValue type) {
+            m_type = type;
         }
 
-        virtual std::string optionToString() const {
-            std::stringstream line;
-
-            if (getShortOption() != 0) {
-                line << "  -" << getShortOption();
-                if (!getLongOption().empty()) {
-                    line << ", ";
-                }
-            } else {
-                line << "  ";
-            }
-
-            if (!getLongOption().empty()) {
-                line << "--" << getLongOption();
-            }
-
-            return line.str();
+        inline OptionValue getType() const {
+            return m_type;
         }
-
-        virtual std::vector<std::string> descriptionToString(std::size_t width = 40) const {
-            std::vector<std::string> lines;
-            std::stringstream description(getDescription());
-            std::string line;
-
-            while (std::getline(description, line, '\n')) {
-                lines.push_back(line);
-            }
-
-            return lines;
-        }
-
-        virtual OptionValue getType() const = 0;
     };
 
 } // end of console namespace
