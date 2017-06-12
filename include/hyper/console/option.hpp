@@ -10,7 +10,7 @@
  */
 #pragma once
 
-#include <hyper/console/command.hpp>
+//#include <hyper/console/command.hpp>
 #include <hyper/console/option_value.hpp>
 #include <sstream>
 #include <string>
@@ -20,7 +20,7 @@ namespace hyper {
 namespace console {
 
     class Option {
-        friend class Command;
+        //friend class Command;
     protected:
         std::string m_short_option;
 
@@ -32,40 +32,7 @@ namespace console {
 
         unsigned int m_count;
 
-        virtual void parse(const std::string& whatOption, const char* value) = 0;
-
         virtual void updateReference() = 0;
-
-        std::string optionToString() const {
-            std::stringstream line;
-
-            if (getShortOption() != 0) {
-                line << "  -" << getShortOption();
-                if (!getLongOption().empty()) {
-                    line << ", ";
-                }
-            } else {
-                line << "  ";
-            }
-
-            if (!getLongOption().empty()) {
-                line << "--" << getLongOption();
-            }
-
-            return line.str();
-        }
-
-        std::vector<std::string> descriptionToString(std::size_t width = 40) const {
-            std::vector<std::string> lines;
-            std::stringstream description(getDescription());
-            std::string line;
-
-            while (std::getline(description, line, '\n')) {
-                lines.push_back(line);
-            }
-
-            return lines;
-        }
     public:
         Option(const OptionValue type, const std::string& shortOption, const std::string& longOption, const std::string& description) :
             m_short_option(shortOption),
@@ -81,6 +48,10 @@ namespace console {
             if (shortOption.empty() && longOption.empty()) {
                 throw std::invalid_argument("short and long option are empty");
             }
+        }
+
+        virtual ~Option() {
+
         }
 
         inline char getShortOption() const {
@@ -113,6 +84,39 @@ namespace console {
 
         inline OptionValue getType() const {
             return m_type;
+        }
+
+        virtual void parse(const std::string& whatOption, const std::string& value) = 0;
+
+        std::string optionToString() const {
+            std::stringstream line;
+
+            if (getShortOption() != 0) {
+                line << "  -" << getShortOption();
+                if (!getLongOption().empty()) {
+                    line << ", ";
+                }
+            } else {
+                line << "  ";
+            }
+
+            if (!getLongOption().empty()) {
+                line << "--" << getLongOption();
+            }
+
+            return line.str();
+        }
+
+        std::vector<std::string> descriptionToString(std::size_t width = 40) const {
+            std::vector<std::string> lines;
+            std::stringstream description(getDescription());
+            std::string line;
+
+            while (std::getline(description, line, '\n')) {
+                lines.push_back(line);
+            }
+
+            return lines;
         }
     };
 

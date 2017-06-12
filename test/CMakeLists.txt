@@ -25,8 +25,15 @@ target_link_libraries (hyper-console-test ${HYPER_LINK_FLAGS} HyperConsoleLib)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     include (CodeCoverage)
-    setup_target_for_coverage (hyper-console-coverage hyper-console-test coverage)
-    target_link_libraries (hyper-console-test gcov)
+    APPEND_COVERAGE_COMPILER_FLAGS()
+    setup_target_for_coverage (
+        NAME coverage
+        EXECUTABLE hyper-console-test
+        DEPENDENCIES hyper-console-test
+    )
+    #setup_target_for_coverage (NAME hyper-console-coverage hyper-console-test coverage)
+    #target_link_libraries (hyper-console-test gcov)
+    #message(STATUS "Coverage enable")
 endif ()
 
 

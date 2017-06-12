@@ -28,43 +28,27 @@ namespace console {
             setType(OptionValue::None);
         }
 
-    protected:
-        virtual void parse(const std::string& whatOption, const char* value);
+        virtual void parse(const std::string& whatOption, const std::string& value) {
+            addValue(true);
+        }
 
-        virtual std::string optionToString() const;
+        virtual std::string optionToString() const {
+            return Option::optionToString();
+        }
 
-        //virtual OptionValue getType() const;
+        Switch& assignTo(bool* var) {
+            m_assign_to = var;
 
-        Switch& setDefault(const bool& value);
+            return *this;
+        }
+
+        Switch& setDefault(const bool& value) {
+            m_default = value;
+            m_has_default = true;
+
+            return *this;
+        }
     };
-    /*
-    Switch::Switch(const std::string& shortOption, const std::string& longOption, const std::string& description) :
-        Value<bool>(shortOption, longOption, description, false)
-    {
-        setType(OptionValue::None);
-    }
-
-
-    Switch::Switch(const std::string& shortOption, const std::string& longOption, const std::string& description, bool* assignTo) :
-        Value<bool>(shortOption, longOption, description, false, assignTo)
-    {
-        setType(OptionValue::None);
-    }*/
-
-
-    void Switch::parse(const std::string& whatOption, const char* value) {
-        addValue(true);
-    }
-
-
-    /*OptionValue Switch::getType() const {
-        return OptionValue::None;
-    }*/
-
-
-    std::string Switch::optionToString() const {
-        return Option::optionToString();
-    }
 
 } // end of console namespace
 } // end of hyper namespace

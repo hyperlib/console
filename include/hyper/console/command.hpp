@@ -57,24 +57,7 @@ namespace console {
 
         std::string getDescription() const;
 
-        //Command& option(Option& option);
-
-        template<typename T>
-        Command& option(T& option) {
-            for (std::size_t n = 0; n < m_options.size(); ++n) {
-                if ((option.getShortOption() != 0) && (option.getShortOption() == m_options[n]->getShortOption())) {
-                    throw std::invalid_argument("dublicate short option '-" + std::string(1, option.getShortOption()) + "'");
-                }
-
-                if (!option.getLongOption().empty() && (option.getLongOption() == (m_options[n]->getLongOption()))) {
-                    throw std::invalid_argument("dublicate long option '--" + option.getLongOption() + "'");
-                }
-            }
-
-            m_options.push_back(&option);
-
-            return *this;
-        }
+        Command& option(Option* option);
 
         Command& command(Command& command);
 
