@@ -44,9 +44,7 @@ namespace console {
 
         virtual void parse(const std::string& whatOption, const std::string& value) {
             if (!value.empty()) {
-                std::cout << "----- Start Implicit::Parse -------" << std::endl;
                 Value<T>::parse(whatOption, value);
-                std::cout << "----- End Implicit::Parse -------" << std::endl;
             } else {
                 this->addValue(this->m_default);
             }
