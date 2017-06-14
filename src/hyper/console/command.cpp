@@ -183,7 +183,6 @@ namespace console {
                     std::string optarg;
 
                     if ((option = getShortOpt(c)) != NULL) {
-         
                         if (option->getType() == OptionValue::Required) {
                             /// use the rest of the current argument as optarg
                             optarg = opt.substr(m + 1);
@@ -198,12 +197,12 @@ namespace console {
                             /// use the rest of the current argument as optarg
                             optarg = opt.substr(m + 1);
                             m = opt.size();
+                        }
 
-                            // trim space or equal ex= -l=foo or -l foo
-                            //                           ^         ^
-                            if (optarg[0] == '=' || optarg[0] == ' ') {
-                                optarg = optarg.substr(1);
-                            }
+                        // trim space or equal ex= -l=foo
+                        //                           ^
+                        if (!optarg.empty() && optarg[0] == '=') {
+                            optarg = optarg.substr(1);
                         }
                     }
 
@@ -259,7 +258,7 @@ namespace console {
 
             return EXIT_FAILURE;
         }
-        
+
         /*
         for (auto arg : m_args) {
             std::cout << "--- arg: " << arg << std::endl;
@@ -298,7 +297,7 @@ namespace console {
         } else {
             //@TODO optimize this
             cmd->parse(m_argv);
-            
+
             // exec command handle
             return cmd->exec();
         }

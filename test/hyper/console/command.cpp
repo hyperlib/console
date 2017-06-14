@@ -33,9 +33,9 @@ public:
 
     int execute() {
         auto args = getArguments();
-        
+
         BOOST_REQUIRE_EQUAL(args.size(), 1ull);
-        
+
         std::string package = args.front();
 
         BOOST_CHECK_EQUAL(package, "my-package");
@@ -55,8 +55,40 @@ public:
 
 BOOST_AUTO_TEST_SUITE(hyper_console_command)
 
-BOOST_AUTO_TEST_CASE(test_command_simple) {
+BOOST_AUTO_TEST_CASE(test_command_simple_with_option) {
+    std::vector<std::string> args = {"test-cmd", "-linfo", "version"};
+
+    hyper::console::Application* app = new hyper::console::Application();
+
+    app->setName("test-cmd");
+    app->setDescription("test command");
+    app->addCommand(new VersionCommand());
+
+    app->parse(args);
+
+    BOOST_CHECK_EQUAL(app->run(), EXIT_SUCCESS);
+
+    delete app;
+}
+
+BOOST_AUTO_TEST_CASE(test_command_simple_with_equal_for_option) {
     std::vector<std::string> args = {"test-cmd", "-l=info", "version"};
+
+    hyper::console::Application* app = new hyper::console::Application();
+
+    app->setName("test-cmd");
+    app->setDescription("test command");
+    app->addCommand(new VersionCommand());
+
+    app->parse(args);
+
+    BOOST_CHECK_EQUAL(app->run(), EXIT_SUCCESS);
+
+    delete app;
+}
+
+BOOST_AUTO_TEST_CASE(test_command_simple_with_long_option) {
+    std::vector<std::string> args = {"test-cmd", "--log-level=info", "version"};
 
     hyper::console::Application* app = new hyper::console::Application();
 
