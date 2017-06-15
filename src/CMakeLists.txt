@@ -15,3 +15,5 @@ set_target_properties (HyperConsoleLib PROPERTIES
 )
 
 target_include_directories (HyperConsoleLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+install (TARGETS HyperConsoleLib DESTINATION lib)

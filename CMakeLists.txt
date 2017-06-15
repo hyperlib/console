@@ -45,6 +45,7 @@ set (CMAKE_CXX_FLAGS_RELEASE "-O3 -fomit-frame-pointer ${CXX_FLAGS_EXTRA}")
 
 enable_testing ()
 
-add_subdirectory(src)
-add_subdirectory(test)
+add_subdirectory (include)
+add_subdirectory (src)
+add_subdirectory (test)
 
