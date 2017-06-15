@@ -20,13 +20,17 @@ namespace console {
     class Application: public Command {
     public:
         Application(): Command() {
-            option(new Switch("h", "help", "Print usage"));
-            option(new Implicit<std::string>(
+            addOption(new Switch("h", "help", "Print usage"));
+            addOption(new Implicit<std::string>(
                 "l",
                 "log-level",
                 "Set the logging level (\"debug\", \"info\", \"warn\", \"error\", \"fatal\")",
                 "info"
             ));
+        }
+        
+        virtual ~Application() {
+            
         }
     };
 

@@ -14,29 +14,35 @@
 #include <hyper/console/option_value.hpp>
 #include <iomanip>
 #include <iostream>
+#include <map>
 #include <sstream>
+#include <string>
 
 namespace hyper {
 namespace console {
 
-    Command::Command(): m_options(), m_commands(), m_parent(nullptr) {
+    Command::Command(): m_parent(nullptr) {
     }
 
     Command::~Command() {
+        /*
+        for (std::map<std::string, Command*>::iterator itr = m_commands.begin(); itr != m_commands.end(); itr++) {
+            delete itr->second;
+        }
+        */
         for (std::size_t i = 0; i < m_options.size(); ++i) {
             delete m_options[i];
         }
 
-        m_options.clear();
     }
 
-    Command& Command::parent(const Command& command) {
-        m_parent = &command;
+    Command& Command::setParent(const Command* command) {
+        m_parent = command;
 
         return *this;
     }
 
-    Command& Command::name(const std::string& name) {
+    Command& Command::setName(const std::string& name) {
         m_name = name;
 
         return *this;
@@ -46,7 +52,7 @@ namespace console {
         return m_name;
     }
 
-    Command& Command::description(const std::string& description) {
+    Command& Command::setDescription(const std::string& description) {
         m_description = description;
 
         return *this;
@@ -56,7 +62,7 @@ namespace console {
         return m_description;
     }
 
-    Command& Command::option(Option* option) {
+    Command& Command::addOption(Option* option) {
         for (std::size_t n = 0; n < m_options.size(); ++n) {
             if ((option->getShortOption() != 0) && (option->getShortOption() == m_options[n]->getShortOption())) {
                 throw std::invalid_argument("dublicate short option '-" + std::string(1, option->getShortOption()) + "'");
@@ -72,22 +78,17 @@ namespace console {
         return *this;
     }
 
-    Command& Command::command(Command& cmd) {
-        cmd.parent(*this);
+    Command& Command::addCommand(Command* cmd) {
+        cmd->setParent(this);
+        cmd->configuration();
 
-        m_commands[cmd.getName()] = &cmd;
+        m_commands[cmd->getName()] = cmd;
 
         return *this;
     }
 
     bool Command::hasCommand() const {
         return m_commands.size() > 0;
-    }
-
-    Command& Command::handle(const std::function<int(const Command& cmd)> handle_) {
-        m_handle = handle_;
-
-        return *this;
     }
 
     Option* Command::getLongOpt(const std::string& opt) const {
@@ -111,6 +112,10 @@ namespace console {
         return NULL;
     }
 
+    std::vector<std::string>& Command::getArguments() {
+        return m_args;
+    }
+
     Command& Command::parse(int argc, char *argv[]) {
         std::vector<std::string> arguments(argv + 0, argv + argc);
 
@@ -121,11 +126,6 @@ namespace console {
         m_args.clear();
 
         args.erase(args.begin());
-
-        std::cout << "Parse -------" << std::endl;
-        for (auto arg : args) {
-            std::cout << "--- arg: " << arg << std::endl;
-        }
 
         m_argv = args;
 
@@ -173,8 +173,6 @@ namespace console {
                     std::cerr << "Unknown options: " << arg << std::endl;
                 }
             } else if (arg.find("-") == 0) {
-                std::cout << "--- parse short option: " << arg << std::endl;
-
                 /// short option arg
                 std::string opt = arg.substr(1);
                 bool unknown = false;
@@ -183,14 +181,9 @@ namespace console {
                     char c = opt[m];
                     Option* option = NULL;
                     std::string optarg;
-                    std::cout << "--- before getShortOpt (" << c << ")" << std::endl;
+
                     if ((option = getShortOpt(c)) != NULL) {
-                        std::cout << "--- after getShortOpt (" << c << ")" << std::endl;
-
-                        std::cout << "--- option->getType() (" << static_cast<int>(option->getType()) << ")" << std::endl;
-
                         if (option->getType() == OptionValue::Required) {
-                            std::cout << "--- getType == required" << std::endl;
                             /// use the rest of the current argument as optarg
                             optarg = opt.substr(m + 1);
                             /// or the next arg
@@ -201,27 +194,21 @@ namespace console {
 
                             m = opt.size();
                         } else if (option->getType() == OptionValue::Optional) {
-                            std::cout << "--- getType == optional" << std::endl;
                             /// use the rest of the current argument as optarg
                             optarg = opt.substr(m + 1);
                             m = opt.size();
-
-                            // trim space or equal ex= -l=foo or -l foo
-                            //                           ^         ^
-                            if (optarg[0] == '=' || optarg[0] == ' ') {
-                                optarg = optarg.substr(1);
-                            }
                         }
-                        std::cout << "--- end getShortOpt (" << c << ") arg=" << optarg << std::endl;
+
+                        // trim space or equal ex= -l=foo
+                        //                           ^
+                        if (!optarg.empty() && optarg[0] == '=') {
+                            optarg = optarg.substr(1);
+                        }
                     }
 
-                    std::cout << "--- option != NULL" << std::endl;
                     if (option != NULL) {
-                        std::cout << "--- start option->parse()" << std::endl;
                         option->parse(std::string(1, c), optarg);
-                        std::cout << "--- end option->parse()" << std::endl;
                     } else {
-                        std::cout << "--- option unknown" << std::endl;
                         unknown = true;
                     }
                 }
@@ -231,16 +218,12 @@ namespace console {
                     std::cerr << "Unknown options: " << arg << std::endl;
                     //m_unknown_options.push_back(arg);
                 } else {
-                    std::cout << "--- start m_argv.erase(it);" << std::endl;
                     m_argv.erase(m_argv.begin() + i);
-                    std::cout << "--- end m_argv.erase(it);" << std::endl;
                 }
             } else {
                 m_args.push_back(arg);
             }
         }
-
-        std::cout << "Parse end -------" << std::endl;
 
         return *this;
     }
@@ -253,12 +236,7 @@ namespace console {
 
     int Command::exec() {
         try {
-            // exec handle
-            return m_handle(*this);
-        } catch (std::bad_function_call& ex) {
-            std::cerr << "Bad function call: " << ex.what() << std::endl;
-
-            return EXIT_FAILURE;
+            return execute();
         } catch (std::exception& ex) {
             std::cerr << ex.what() << std::endl;
 
@@ -281,9 +259,11 @@ namespace console {
             return EXIT_FAILURE;
         }
 
+        /*
         for (auto arg : m_args) {
             std::cout << "--- arg: " << arg << std::endl;
         }
+        */
 
         // get command
         std::string command = m_args.front();
@@ -315,6 +295,9 @@ namespace console {
 
             return cmd->run();
         } else {
+            //@TODO optimize this
+            cmd->parse(m_argv);
+
             // exec command handle
             return cmd->exec();
         }

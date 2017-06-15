@@ -10,6 +10,7 @@
  */
 #pragma once
 
+#include <exception>
 #include <functional>
 #include <hyper/console/option.hpp>
 #include <hyper/console/option_value.hpp>
@@ -45,29 +46,29 @@ namespace console {
     public:
         Command();
 
-        ~Command();
+        virtual ~Command();
 
-        Command& parent(const Command& command);
+        Command& setParent(const Command* command);
 
-        Command& name(const std::string& name);
+        Command& setName(const std::string& name);
 
         std::string getName() const;
 
-        Command& description(const std::string& description);
+        Command& setDescription(const std::string& description);
 
         std::string getDescription() const;
 
-        Command& option(Option* option);
+        Command& addOption(Option* option);
 
-        Command& command(Command& command);
+        Command& addCommand(Command* command);
 
         bool hasCommand() const;
-
-        Command& handle(const std::function<int(const Command& cmd_)> handle_);
 
         Option* getLongOpt(const std::string& opt) const;
 
         Option* getShortOpt(const char opt) const;
+
+        std::vector<std::string>& getArguments();
 
         Command& parse(int argc, char *argv[]);
 
@@ -84,6 +85,14 @@ namespace console {
         std::string help() const;
 
         std::vector<std::string> descriptionToString(std::size_t width = 40) const;
+
+        virtual void configuration() {}
+
+        virtual int execute() {
+            throw std::runtime_error("Implement execute() for command");
+
+            return EXIT_FAILURE;
+        }
     };
 
 } // end of console namespace
