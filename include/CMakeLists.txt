@@ -1,16 +1,5 @@
 
-macro (install_headers_with_directory HEADER_LIST)
-    foreach (HEADER ${${HEADER_LIST}})
-        string (REGEX MATCH "(.\\\*)\\\[/\\\]" DIR ${HEADER})
-        install (FILES ${HEADER} DESTINATION include/${DIR})
-    endforeach (HEADER)
+add_library(HyperConsoleHeaders INTERFACE)
+target_compile_definitions(HyperConsoleHeaders INTERFACE LIBRARY_HEADER_ONLY)
 
-endmacro (install_headers_with_directory)
-
-file (
-    GLOB_RECURSE
-    HEADERS_FILES
-    "*.hpp"
-)
-
-install_headers_with_directory (HEADERS_FILES)
+install(TARGETS HyperConsoleHeaders INCLUDES DESTINATION include)
