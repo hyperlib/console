@@ -1,5 +1,12 @@
 
-add_library(HyperConsoleHeaders INTERFACE)
-target_compile_definitions(HyperConsoleHeaders INTERFACE LIBRARY_HEADER_ONLY)
+file (
+    GLOB_RECURSE
+    INCLUDE_FILES
+    "*.hpp"
+)
 
-install(TARGETS HyperConsoleHeaders INCLUDES DESTINATION include)
+
+foreach (file ${INCLUDE_FILES} )
+    get_filename_component (dir ${file} DIRECTORY)
+    install (FILES ${file} DESTINATION include/${dir})
+endforeach()
