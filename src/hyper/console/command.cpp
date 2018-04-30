@@ -167,7 +167,7 @@ namespace console {
                     option->parse(opt, optarg);
 
                     m_argv.erase(m_argv.begin() + i);
-                } else {
+                } else if (m_commands.empty()) {
                     //@TODO throw error
                     //m_unknown_options.push_back(arg);
                     std::cerr << "Unknown options: " << arg << std::endl;
@@ -213,7 +213,7 @@ namespace console {
                     }
                 }
 
-                if (unknown) {
+                if (unknown && m_commands.empty()) {
                     //@TODO throw error
                     std::cerr << "Unknown options: " << arg << std::endl;
                     //m_unknown_options.push_back(arg);
