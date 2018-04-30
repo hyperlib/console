@@ -13,6 +13,7 @@
 #include <exception>
 #include <functional>
 #include <hyper/console/option.hpp>
+#include <hyper/console/value.hpp>
 #include <hyper/console/option_value.hpp>
 #include <iostream>
 #include <map>
@@ -64,7 +65,17 @@ namespace console {
 
         bool hasCommand() const;
 
+        template<typename T>
+        Value<T>* getLongOpt(const std::string& opt) const {
+            return static_cast<Value<T>*>(getLongOpt(opt));
+        }
+
         Option* getLongOpt(const std::string& opt) const;
+
+        template<typename T>
+        Value<T>* getShortOpt(const char opt) const {
+            return static_cast<Value<T>*>(getShortOpt(opt));
+        }
 
         Option* getShortOpt(const char opt) const;
 

@@ -22,6 +22,11 @@ namespace console {
 
     class Switch : public Value<bool> {
     public:
+        Switch(): Value<bool>("", "", "", false)
+        {
+            setType(OptionValue::None);
+        }
+
         Switch(const std::string& shortOption, const std::string& longOption, const std::string& description):
             Value<bool>(shortOption, longOption, description, false)
         {
