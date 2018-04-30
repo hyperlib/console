@@ -22,6 +22,13 @@ namespace console {
     template<class T>
     class Value : public Option {
     public:
+        Value():
+            Option(OptionValue::Required, "", "", ""),
+            m_assign_to(NULL),
+            m_has_default(false)
+        {
+        }
+
         Value(const std::string& shortOption, const std::string& longOption, const std::string& description):
             Option(OptionValue::Required, shortOption, longOption, description),
             m_assign_to(NULL),
