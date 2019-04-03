@@ -4,6 +4,7 @@ dev/
 demo/
 spec/
 scripts/
+bazel-*
 
 .DS_Store
 
