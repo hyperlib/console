@@ -1,0 +1,10 @@
+licenses(["notice"]) # MIT
+
+exports_files(["LICENSE.md"])
+
+cc_library(
+    name = "hyperconsole",
+    srcs = glob(["hyper/console/*.cpp"]),
+    hdrs = glob(["hyper/console/*.hpp"]),
+    visibility = ["//visibility:public"],
+)

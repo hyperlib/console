@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 #include <boost/test/unit_test.hpp>
-#include <hyper/console/switch.hpp>
+#include "hyper/console/switch.hpp"
 
 BOOST_AUTO_TEST_SUITE(hyper_console_switch)
 

@@ -1,4 +1,4 @@
-// <hyper/console/application.hpp> -*- C++ -*-
+// "application.hpp> -*- C++ -*-
 
 /**
  * Hyper
@@ -10,9 +10,9 @@
  */
 #pragma once
 
-#include <hyper/console/command.hpp>
-#include <hyper/console/implicit.hpp>
-#include <hyper/console/switch.hpp>
+#include "command.hpp"
+#include "implicit.hpp"
+#include "switch.hpp"
 
 namespace hyper {
 namespace console {
@@ -28,9 +28,9 @@ namespace console {
                 "info"
             ));
         }
-        
+
         virtual ~Application() {
-            
+
         }
     };
 

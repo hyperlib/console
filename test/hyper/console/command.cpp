@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 #include <boost/test/unit_test.hpp>
-#include <hyper/console/application.hpp>
+#include "hyper/console/application.hpp"
 
 class VersionCommand: public hyper::console::Command {
 public:

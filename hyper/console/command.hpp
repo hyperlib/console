@@ -12,14 +12,15 @@
 
 #include <exception>
 #include <functional>
-#include <hyper/console/option.hpp>
-#include <hyper/console/value.hpp>
-#include <hyper/console/option_value.hpp>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
+
+#include "option.hpp"
+#include "value.hpp"
+#include "option_value.hpp"
 
 namespace hyper {
 namespace console {

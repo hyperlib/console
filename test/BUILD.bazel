@@ -1,0 +1,9 @@
+
+cc_test(
+    name = "hyperconsole-test",
+    srcs = glob(["**/*.cpp"]),
+    deps = [
+        "//:hyperconsole",
+        "@boost//:test"
+    ]
+)

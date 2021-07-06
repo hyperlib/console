@@ -1,0 +1,13 @@
+on: push
+name: CI
+jobs:
+  checks:
+    name: run
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Testing
+      uses: ngalaiko/bazel-action@2.0.0
+      with:
+        args: test //test:hyperconsole-test

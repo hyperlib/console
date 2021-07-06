@@ -1,4 +1,4 @@
-// <hyper/console/implicit.hpp> -*- C++ -*-
+// "implicit.hpp> -*- C++ -*-
 
 /**
  * Hyper
@@ -10,13 +10,14 @@
  */
 #pragma once
 
-#include <hyper/console/option.hpp>
-#include <hyper/console/option_value.hpp>
-#include <hyper/console/value.hpp>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include "option.hpp"
+#include "option_value.hpp"
+#include "value.hpp"
 
 namespace hyper {
 namespace console {

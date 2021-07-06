@@ -10,13 +10,14 @@
  */
 
 #include <functional>
-#include <hyper/console/command.hpp>
-#include <hyper/console/option_value.hpp>
 #include <iomanip>
 #include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
+
+#include "command.hpp"
+#include "option_value.hpp"
 
 namespace hyper {
 namespace console {
