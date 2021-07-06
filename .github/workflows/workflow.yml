@@ -5,9 +5,18 @@ jobs:
     name: run
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
+
+    - uses: bazelbuild/setup-bazelisk@v1
+
+    - name: Mount bazel cache
+      uses: actions/cache@v2
+      with:
+        path: "~/.cache/bazel"
+        key: bazel
+
+    - name: Building
+      run: bazel build //...
 
     - name: Testing
-      uses: ngalaiko/bazel-action@2.0.0
-      with:
-        args: test //test:hyperconsole-test
+      run: bazel test //test:hyperconsole-test
